@@ -1,0 +1,8 @@
+# Directories
+bin/
+lib/
+__pycache__/
+include/
+
+# Files
+pip-selfcheck.json
