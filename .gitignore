@@ -6,3 +6,7 @@ include/
 
 # Files
 pip-selfcheck.json
+
+# Patterns
+*.pyc
+*.sublime-*
