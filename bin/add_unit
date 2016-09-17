@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+
+// Set NODE_PATH to lib/.
+process.env.NODE_PATH = require("path").join(__dirname, "../lib");
+require("module").Module._initPaths();
+
+// Run babel init script then front-end script.
+require("babel_init");
+require("add_unit");

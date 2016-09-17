@@ -1,0 +1,28 @@
+[
+    {
+        key: "h",
+        description: "header",
+        root_directory: "include",
+        template: "header.hpp",
+        extension: ".hpp"
+    },
+    {
+        key: "s",
+        description: "source",
+        root_directory: "src",
+        template: "source.cpp",
+        extension: ".cpp"
+    },
+    # {
+    #     key: "i",
+    #     description: "template implementation",
+    # },
+    # {
+    #     key: "t",
+    #     description: "test source",
+    # },
+    # {
+    #     key: "f",
+    #     description: "test fixture",
+    # },
+]
