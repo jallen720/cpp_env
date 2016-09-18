@@ -3,5 +3,8 @@ lib/
 node_modules/
 testing/
 
+# Files
+todo
+
 # Patterns
 *.sublime-*
