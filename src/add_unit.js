@@ -43,12 +43,14 @@ function main()
 {
     const args = process.argv;
 
+
     // Validate correct number of args were entered.
     if (args.length !== 6)
     {
         console.log("usage: unit_name namespace sub_directory file_keys");
         process.exit();
     }
+
 
     const add_unit_args =
     {
@@ -66,12 +68,14 @@ function main()
             add_unit_args.file_keys,
             (file_key) => !_.includes(unit_file_keys, file_key));
 
+
     // Validate no invalid file keys were entered.
     if (invalid_file_keys.length > 0)
     {
         console.error(_.map(invalid_file_keys, get_invalid_file_key_message).join("\n"));
         process.exit();
     }
+
 
     const selected_unit_files_data =
         _.filter(
