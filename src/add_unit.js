@@ -1,4 +1,13 @@
-import { join } from 'path';
+import { join, sep } from 'path';
+
+import
+{
+    writeFileSync,
+    mkdirSync,
+    existsSync,
+}
+from 'fs';
+
 import { _ } from 'lodash';
 
 import
@@ -6,6 +15,7 @@ import
     string_format,
     read_yaml_file,
     read_resource_file,
+    join_paths,
 }
 from 'cpp_env/utils'
 
@@ -23,14 +33,11 @@ function get_invalid_file_key_message(invalid_file_key)
 
 function get_unit_file_path(args, unit_file_data)
 {
-    return join(
-        unit_file_data.root_directory,
-
-        // Counting on the user to enter the correct directory delimiter for their OS if sub_directory is multiple
-        // levels deep.
-        args.sub_directory,
-
-        args.unit_name + unit_file_data.extension);
+    return (
+    {
+        directory_paths : _.concat(unit_file_data.root_directory, args.sub_directory.split(sep)),
+        file            : args.unit_name + unit_file_data.extension,
+    });
 }
 
 
@@ -90,11 +97,31 @@ function main()
                 return (
                 {
                     path     : get_unit_file_path(add_unit_args, unit_file_data),
-                    template : read_resource_file([ "templates", unit_file_data.template ]),
+                    template : read_resource_file(_.concat([ "templates" ], unit_file_data.template_paths)),
                 });
             });
 
-    console.log(string_format(unit_files));
+    _.forEach(unit_files, (unit_file) =>
+    {
+        const path = unit_file.path;
+
+
+        // Create all non-existant directories in unit file's path.
+        var current_path = "";
+
+        _.forEach(path.directory_paths, (directory_path) =>
+        {
+            current_path = join(current_path, directory_path);
+
+            if (!existsSync(current_path))
+            {
+                mkdirSync(current_path);
+            }
+        });
+
+
+        writeFileSync(join(_.reduce(path.directory_paths, join_paths), path.file), unit_file.template);
+    });
 }
 
 

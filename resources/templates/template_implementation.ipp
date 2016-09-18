@@ -1,0 +1,7 @@
+namespace [[ NAMESPACE ]]
+{
+
+
+
+
+} // namespace [[ NAMESPACE ]]

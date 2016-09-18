@@ -3,20 +3,23 @@
         key: "h",
         description: "header",
         root_directory: "include",
-        template: "header.hpp",
+        template_paths: [ "header.hpp" ],
         extension: ".hpp"
     },
     {
         key: "s",
         description: "source",
         root_directory: "src",
-        template: "source.cpp",
+        template_paths: [ "source.cpp" ],
         extension: ".cpp"
     },
-    # {
-    #     key: "i",
-    #     description: "template implementation",
-    # },
+    {
+        key: "i",
+        description: "template implementation",
+        root_directory: "include",
+        template_paths: [ "template_implementation.ipp" ],
+        extension: ".ipp"
+    },
     # {
     #     key: "t",
     #     description: "test source",
