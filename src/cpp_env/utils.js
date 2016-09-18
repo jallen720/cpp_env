@@ -9,10 +9,11 @@ import { load } from 'js-yaml';
 // Data
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-const OPEN_BRACKETS = [ "{", "[" ];
+const OPEN_BRACKETS  = [ "{", "[" ];
 const CLOSE_BRACKETS = [ "}", "]" ];
-const TAB_SIZE = 4;
+const TAB_SIZE       = 4;
 const YAML_EXTENSION = ".yaml";
+const LOG_DIVIDER    = _.repeat("/", 80);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -117,4 +118,13 @@ export function read_yaml_file(paths)
 export function join_paths(path_a, path_b)
 {
     return join(path_a, path_b);
+}
+
+
+export function log_file(path, content)
+{
+    console.log(
+        `/// ${ path } ${ _.repeat("/", LOG_DIVIDER.length - path.length - 5) }\n` +
+        content + "\n" +
+        LOG_DIVIDER + "\n\n\n");
 }
