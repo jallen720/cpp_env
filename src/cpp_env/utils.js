@@ -71,10 +71,6 @@ export function string_format(object)
         {
             text += char + "\n" + get_tabs(current_tab_count);
         }
-        else if (char === ":")
-        {
-            text += char + " ";
-        }
         else
         {
             // Put space between colon and normal value.
@@ -92,6 +88,7 @@ export function string_format(object)
         }
 
         previous_was_escape = is_in_string && char === "\\";
+        previous_was_colon = !is_in_string && char === ":";
     });
 
     return text;
