@@ -1,7 +1,7 @@
-namespace [[ NAMESPACE ]]
+namespace [[ scope.namespace ]]
 {
 
 
 
 
-} // namespace [[ NAMESPACE ]]
+} // namespace [[ scope.namespace ]]

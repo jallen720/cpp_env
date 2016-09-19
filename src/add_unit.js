@@ -1,4 +1,6 @@
-import { join, sep } from 'path';
+import { join, sep } from "path";
+import { Script, createContext } from "vm";
+import { _ } from "lodash";
 
 import
 {
@@ -6,9 +8,7 @@ import
     mkdirSync,
     existsSync,
 }
-from 'fs';
-
-import { _ } from 'lodash';
+from "fs";
 
 import
 {
@@ -17,7 +17,7 @@ import
     read_resource_file,
     join_paths,
 }
-from 'cpp_env/utils'
+from "cpp_env/utils"
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +38,12 @@ function get_unit_file_path(args, unit_file_data)
         directory_paths : _.concat(unit_file_data.root_directory, args.sub_directory.split(sep)),
         file            : args.unit_name + unit_file_data.extension,
     });
+}
+
+
+function get_unit_file_include_path(unit_file_data)
+{
+    return _.reduce(_.concat(_.tail(unit_file_data.path.directory_paths), [ unit_file_data.path.file ]), join_paths);
 }
 
 
@@ -96,11 +102,28 @@ function main()
             {
                 return (
                 {
+                    key      : unit_file_data.key,
                     path     : get_unit_file_path(add_unit_args, unit_file_data),
                     template : read_resource_file(_.concat([ "templates" ], unit_file_data.template_paths)),
                 });
             });
 
+
+    // Define scope variables and create context from scope to be used by templates.
+    var context = { scope: {} };
+    var scope = context.scope;
+    scope.namespace = add_unit_args.namespace;
+    scope.header_include_path = get_unit_file_include_path(_.find(unit_files, { key: "h" }));
+
+    if (_.includes(add_unit_args.file_keys, "i"))
+    {
+        scope.template_impl_include_path = get_unit_file_include_path(_.find(unit_files, { key: "i" }));
+    }
+
+    const template_context = createContext(context);
+
+
+    // Create unit files from templates.
     _.forEach(unit_files, (unit_file) =>
     {
         const path = unit_file.path;
@@ -120,7 +143,31 @@ function main()
         });
 
 
-        writeFileSync(join(_.reduce(path.directory_paths, join_paths), path.file), unit_file.template);
+        // Replace template variables with their associated values in template_context.scope.
+        var template_parts = unit_file.template.split(/\[{2}(.*?)\]{2}/g);
+
+        // Every other element in template_parts is a template variable (because the template is split by template
+        // variable brackets), so replace every other element with its evaluated value from template_context.scope.
+        for (var i = 1; i < template_parts.length; i += 2)
+        {
+            template_parts[i] = new Script(_.trim(template_parts[i]) + ";").runInContext(template_context);
+        }
+
+
+        // Trim all but last trailing newline.
+        var template_parts = template_parts.join("").split("\n");
+
+        while (
+            template_parts.length > 1 &&
+            template_parts[template_parts.length - 2] === "" &&
+            template_parts[template_parts.length - 1] === "")
+        {
+            template_parts.pop();
+        }
+
+
+        // Write processed template to unit file.
+        writeFileSync(join(_.reduce(path.directory_paths, join_paths), path.file), template_parts.join("\n"));
     });
 }
 

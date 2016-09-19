@@ -1,11 +1,11 @@
-#include "[[ HEADER ]]"
+#include "[[ scope.header_include_path ]]"
 
 
-namespace [[ NAMESPACE ]]
+namespace [[ scope.namespace ]]
 {
 
 
 
 
 
-} // namespace [[ NAMESPACE ]]
+} // namespace [[ scope.namespace ]]
